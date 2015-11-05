@@ -52,3 +52,9 @@ for record in collection.find( { "type": "dated_memo" } ):
     })
 
 print(records)
+
+#for record in collection.find( {"type": "dated_memo" } ):
+#	collection.remove(record)
+
+print(records)
+print("Tried to print records")

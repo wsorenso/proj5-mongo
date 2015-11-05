@@ -63,12 +63,32 @@ def index():
       app.logger.debug("Memo: " + str(memo))
   return flask.render_template('index.html')
 
+@app.route("/_create")
+def create_memo():
+#creates a new memo and puts it in the database
+	print("Got a json request");
+
+	app.logger.debug("Got a JSON request");
+	print("seting date...");
+	date = request.args.get('dt')
+	print("setting text...");
+	text = request.args.get('mem')
+
+	print("putting memos...");
+	format_arrow_date(date);
+	put_memo(date, text);
+	print("finished putting memos...");
+	memos = [ ]#make an array
+	memos = get_memos();#put our memos in it
+	#flask.session['memos'] = get_memos();
+	print("about to return...");
+	return jsonify(memos)#put all our memos in JSON and return them
 
 # We don't have an interface for creating memos yet
-# @app.route("/create")
-# def create():
-#     app.logger.debug("Create")
-#     return flask.render_template('create.html')
+#@app.route("/create")
+#def create():
+#    app.logger.debug("Create")
+#    return flask.render_template('create.html')
 
 
 @app.errorhandler(404)
@@ -85,13 +105,16 @@ def page_not_found(error):
 #################
 
 # NOT TESTED with this application; may need revision 
-#@app.template_filter( 'fmtdate' )
-# def format_arrow_date( date ):
-#     try: 
-#         normal = arrow.get( date )
-#         return normal.to('local').format("ddd MM/DD/YYYY")
-#     except:
-#         return "(bad date)"
+@app.template_filter( 'fmtdate' )
+def format_arrow_date( date ):
+    print("in format arrow date");
+    try: 
+        normal = arrow.get( date )
+        print("about to return well");
+        return normal.to('local').format("ddd MM/DD/YYYY")
+    except:
+        print("about to return bad date");
+        return "(bad date)"
 
 @app.template_filter( 'humanize' )
 def humanize_arrow_date( date ):
@@ -133,7 +156,7 @@ def get_memos():
     return records 
 
 
-# def put_memo(dt, mem):
+def put_memo(dt, mem):
 #     """
 #     Place memo into database
 #     Args:
@@ -141,12 +164,14 @@ def get_memos():
 #        mem: Text of memo
 #     NOT TESTED YET
 #     """
-#     record = { "type": "dated_memo", 
-#                "date": dt.to('utc').naive,
-#                "text": mem
-#             }
-#     collection.insert(record)
-#     return 
+    print("trying to put memo...");
+    record = { "type": "dated_memo", 
+               "date": dt.to('utc').naive,
+               "text": mem
+            }
+    collection.insert(record)
+    print("inserted a record into collection");
+    return 
 
 
 if __name__ == "__main__":

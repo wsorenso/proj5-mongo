@@ -38,6 +38,19 @@
 
 <h1>Memos</h1>
 
+<form method ="PUT" action="_create">
+<div class="row">
+	<div class="col-md-2">
+	<input type="text" class="form-control" name="Date" id="dt" value="Date"/>
+	</div>
+	<div class="col-md-10">
+		<input type="text" class="form-control" name="Memo" id="mm" value="Text of memo..."/>
+		<!-- input id="submit" type="button" value="Submit"/ -->
+		<button onclick="myFunction()">Submit</button>
+	</div>
+</div>
+</form>
+
 {% if session.memos %}
     {% for memo in session.memos %}
   <div class="memo">
@@ -48,6 +61,9 @@
   <div class="col-md-10">
     {{ memo.text }}
   </div>
+  <p>
+	
+  </p>
   </div> <!-- row -->
   </div> <!-- memo -->
   {% endfor %}
@@ -55,7 +71,34 @@
   <p>No memos for you. </p>  
 {% endif %}
 
- 
+<script type="text/javascript">
+//alert("In document.ready!");
+
+	$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+	
+	//$(document).ready(function(){//when the page is finished loading...
+	alert("In document.ready!");
+		//$('input[name="Memo"]').change//when Memo field changed
+		//$("submit").click( function(){
+		function myFunction(){
+				//var submitButton = $(this);
+				alert("In submit click!");
+				//an arrow time/date
+				var datet = document.getElementById("dt").value;
+				//the text of the memo
+				var memo = document.getElementById("mm").value;
+				//Ajax request
+				alert("about to do JSON request");
+				$.getJSON($SCRIPT_ROOT + '/_create',
+					{ dt: datet, mem: memo },
+					//call this function when we get response
+					function(data){
+						alert("got a response");
+						document.write(5 + 6);
+					})//end of on response
+			};//end of click
+//	});//end document.ready */
+</script>
 
 </div> <!-- container -->
 </body>
